@@ -1,0 +1,10 @@
+name: ChequesLite
+version: ${project.version}
+main: me.towaha.chequeslite.ChequesLite
+prefix: ChequesLite
+authors: [Toaster]
+
+commands:
+  cheque:
+    usage: Type '/cheque help' for help
+    description: Type '/cheque help' for help

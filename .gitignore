@@ -5,5 +5,5 @@ target/
 /target/
 /build/
 pom.xml
-ChequesPro.iml
+ChequesLite.iml
 *.iml
