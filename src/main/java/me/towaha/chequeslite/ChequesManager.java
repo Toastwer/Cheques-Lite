@@ -88,7 +88,7 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
                 "\n§8-------------------------------------------------");
 
         if (hasLine)
-            sender.spigot().sendMessage(mainComponent);
+            ((Player) sender).spigot().sendMessage(mainComponent);
         else
             sender.sendMessage(Messages.NO_PERMISSION);
     }
