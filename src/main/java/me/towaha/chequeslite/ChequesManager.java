@@ -25,7 +25,7 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
         this.main = main;
     }
 
-    public TextComponent getHelpLine(String command, String subcommand, String args, String description) {
+    private TextComponent getHelpLine(String command, String subcommand, String args, String description) {
         StringBuilder visualText = new StringBuilder("§e/" + command + " ");
         visualText.append("§e").append(subcommand);
         if (args.length() > 0)
@@ -33,23 +33,26 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
 
         StringBuilder descriptionText = new StringBuilder("§e/" + command + " " + subcommand + " §6Help\n§r");
 
-        int characters = 0;
-        int index = 0;
-        for (String word : description.split(" ")) {
-            if (characters >= 70) {
-                descriptionText.append("\n");
-                characters = 0;
+        if(description != null) {
+            int characters = 0;
+            int index = 0;
+            for (String word : description.split(" ")) {
+                if (characters >= 70) {
+                    descriptionText.append("\n");
+                    characters = 0;
+                }
+
+                characters += word.length();
+                descriptionText.append(word);
+
+                if (index < description.length() - 1)
+                    descriptionText.append(" ");
             }
-
-            characters += word.length();
-            descriptionText.append(word);
-
-            if (index < description.length() - 1)
-                descriptionText.append(" ");
         }
 
         TextComponent component = new TextComponent(visualText.toString() + "\n");
-        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(descriptionText.toString()).create()));
+        if(description != null)
+            component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(descriptionText.toString()).create()));
         return component;
     }
 
@@ -66,22 +69,22 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
 
         if (sender.hasPermission("chequeslite.create")) {
             hasLine = true;
-            mainComponent.addExtra(getHelpLine("cheque", "create", "<amount> [memo]", Messages.DESCRIPTION_CREATE));
+            mainComponent.addExtra(getHelpLine("cheque", "create", "<amount> [memo]", Messages.getMessage(Messages.Keys.DESCRIPTION_CREATE)));
         }
 
         if (sender.hasPermission("chequeslite.send")) {
             hasLine = true;
-            mainComponent.addExtra(getHelpLine("cheque", "send", "<amount> <player> [memo]", Messages.DESCRIPTION_SEND));
+            mainComponent.addExtra(getHelpLine("cheque", "send", "<amount> <player> [memo]", Messages.getMessage(Messages.Keys.DESCRIPTION_SEND)));
         }
 
         if (sender.hasPermission("chequeslite.memo")) {
             hasLine = true;
-            mainComponent.addExtra(getHelpLine("cheque", "memo", "<memo>", Messages.DESCRIPTION_MEMO));
+            mainComponent.addExtra(getHelpLine("cheque", "memo", "<memo>", Messages.getMessage(Messages.Keys.DESCRIPTION_MEMO)));
         }
 
         if (sender.hasPermission("chequeslite.cash")) {
             hasLine = true;
-            mainComponent.addExtra(getHelpLine("cheque", "cash", "", Messages.DESCRIPTION_CASH));
+            mainComponent.addExtra(getHelpLine("cheque", "cash", "", Messages.getMessage(Messages.Keys.DESCRIPTION_CASH)));
         }
 
         mainComponent.addExtra("\n§7§oYou can hover over any of the above commands for help" +
@@ -90,7 +93,7 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
         if (hasLine)
             ((Player) sender).spigot().sendMessage(mainComponent);
         else
-            sender.sendMessage(Messages.NO_PERMISSION);
+            Messages.sendMessage(Messages.Keys.NO_PERMISSION, sender);
     }
 
     @Override
@@ -105,7 +108,7 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
             } else if (args[0].equalsIgnoreCase("cash")) {
                 new Cash(main, sender);
             } else {
-                sender.sendMessage(Messages.COMMAND_DOESNT_EXIST);
+                Messages.sendMessage(Messages.Keys.COMMAND_DOESNT_EXIST, sender);
             }
         } else {
             sendHelp(sender);
@@ -143,7 +146,7 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
     }
 
     public NBTItemStack createCheque(CommandSender sender, double amount, String memo) {
-        if (amount < ChequesLite.MIN_CHEQUE_VALUE || amount < 0)
+        if (amount < main.getConfig().getInt("min_cheque_value") || amount < 0)
             return null;
 
         String currency = ChequesLite.economy.format(amount);
@@ -152,20 +155,20 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
 
         String signer;
         if (sender == null)
-            signer = Messages.UNKNOWN_SENDER;
+            signer = Messages.getMessage(Messages.Keys.UNKNOWN_SENDER);
         else if (sender.getName().equalsIgnoreCase("CONSOLE"))
-            signer = Messages.CONSOLE_SENDER;
+            signer = Messages.getMessage(Messages.Keys.CONSOLE_SENDER);
         else
             signer = sender.getName();
 
-        lore.add(Messages.WORTH_LINE.replace("%worth%", currency));
+        lore.add(Messages.getMessage(Messages.Keys.WORTH_LINE).replace("%worth%", currency));
         if (memo != null && !memo.equals(""))
-            lore.add(Messages.MEMO_LINE.replace("%memo%", memo));
+            lore.add(Messages.getMessage(Messages.Keys.MEMO_LINE).replace("%memo%", memo));
         lore.add(" ");
-        lore.add(Messages.SIGNER_LINE.replace("%signer%", signer));
+        lore.add(Messages.getMessage(Messages.Keys.SIGNER_LINE).replace("%signer%", signer));
 
         return new ItemStackBuilder(Material.PAPER)
-                .displayName(Messages.CHEQUE_NAME.replace("%worth%", currency))
+                .displayName(Messages.getMessage(Messages.Keys.CHEQUE_NAME).replace("%worth%", currency))
                 .lore(lore)
                 .NBTBuild();
     }

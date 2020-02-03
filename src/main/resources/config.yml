@@ -1,0 +1,5 @@
+# The minimum value a cheque can be created at
+min_cheque_value: 100
+
+# The most amount of characters a memo can be
+max_memo_length: 30

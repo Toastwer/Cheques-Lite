@@ -9,21 +9,21 @@ import org.bukkit.entity.Player;
 public class Cash {
     public Cash(ChequesLite main, CommandSender sender) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Messages.ONLY_PLAYERS_CAN_EXECUTE);
+            Messages.sendMessage(Messages.Keys.ONLY_PLAYERS_CAN_EXECUTE, sender);
             return;
         }
 
         Player player = (Player) sender;
 
         if(!player.hasPermission("chequeslite.cashcommand")) {
-            player.sendMessage(Messages.NO_PERMISSION);
+            Messages.sendMessage(Messages.Keys.NO_PERMISSION, player);
             return;
         }
 
         NBTItemStack cheque = new NBTItemStack(main.compareVersion("1.9", ChequesLite.Conditions.GREATEROREQUAL) ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInHand());
 
         if (!cheque.hasItemMeta() || !cheque.getItemMeta().hasDisplayName() || !cheque.getItemMeta().hasLore() || !cheque.hasNBTData("creator")) {
-            player.sendMessage(Messages.INVALID_CHEQUE);
+            Messages.sendMessage(Messages.Keys.INVALID_CHEQUE, player);
             return;
         }
 
@@ -31,7 +31,7 @@ public class Cash {
         try {
             worth = Double.parseDouble(cheque.getNBTData("worth"));
         } catch (NumberFormatException exception) {
-            player.sendMessage(Messages.INVALID_CHEQUE_VALUE);
+            Messages.sendMessage(Messages.Keys.INVALID_CHEQUE_VALUE, player);
             return;
         }
 
@@ -41,11 +41,11 @@ public class Cash {
         ChequesLite.economy.depositPlayer(player, worth);
 
         if(cheque.getAmount() > 1)
-            player.sendMessage(Messages.CHEQUE_CASHED_MULTIPLE
+            player.sendMessage(Messages.getMessage(Messages.Keys.CHEQUE_CASHED_MULTIPLE)
                     .replace("%worth%", ChequesLite.economy.format(worth))
                     .replace("%count%", String.valueOf(cheque.getAmount()))
                     .replace("%total%", ChequesLite.economy.format(total)));
         else
-            player.sendMessage(Messages.CHEQUE_CASHED.replace("%worth%", ChequesLite.economy.format(worth)));
+            player.sendMessage(Messages.getMessage(Messages.Keys.CHEQUE_CASHED).replace("%worth%", ChequesLite.economy.format(worth)));
     }
 }

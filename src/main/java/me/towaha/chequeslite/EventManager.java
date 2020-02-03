@@ -20,19 +20,19 @@ public class EventManager implements Listener {
 
         ItemStack item = event.getItem();
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName() || !item.getItemMeta().hasLore()) {
-            player.sendMessage(Messages.INVALID_CHEQUE);
+            Messages.sendMessage(Messages.Keys.INVALID_CHEQUE, player);
             return;
         }
 
         NBTItemStack cheque = new NBTItemStack(item);
 
         if(!player.hasPermission("chequeslite.cashclick")) {
-            player.sendMessage(Messages.NO_PERMISSION_CLICK);
+            Messages.sendMessage(Messages.Keys.NO_PERMISSION_CLICK, player);
             return;
         }
 
         if (!cheque.hasNBTData("creator")) {
-            player.sendMessage(Messages.INVALID_CHEQUE);
+            Messages.sendMessage(Messages.Keys.INVALID_CHEQUE, player);
             return;
         }
 
@@ -40,7 +40,7 @@ public class EventManager implements Listener {
         try {
             worth = Double.parseDouble(cheque.getNBTData("worth"));
         } catch (NumberFormatException exception) {
-            player.sendMessage(Messages.INVALID_CHEQUE_VALUE);
+            Messages.sendMessage(Messages.Keys.INVALID_CHEQUE_VALUE, player);
             return;
         }
 
@@ -50,11 +50,11 @@ public class EventManager implements Listener {
         ChequesLite.economy.depositPlayer(player, total);
 
         if(cheque.getAmount() > 1)
-            player.sendMessage(Messages.CHEQUE_CASHED_MULTIPLE
+            player.sendMessage(Messages.getMessage(Messages.Keys.CHEQUE_CASHED_MULTIPLE)
                     .replace("%worth%", ChequesLite.economy.format(worth))
                     .replace("%count%", String.valueOf(cheque.getAmount()))
                     .replace("%total%", ChequesLite.economy.format(total)));
         else
-            player.sendMessage(Messages.CHEQUE_CASHED.replace("%worth%", ChequesLite.economy.format(worth)));
+            player.sendMessage(Messages.getMessage(Messages.Keys.CHEQUE_CASHED).replace("%worth%", ChequesLite.economy.format(worth)));
     }
 }

@@ -13,14 +13,14 @@ import java.util.List;
 public class Memo {
     public Memo(ChequesLite main, CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Messages.ONLY_PLAYERS_CAN_EXECUTE);
+            Messages.sendMessage(Messages.Keys.ONLY_PLAYERS_CAN_EXECUTE, sender);
             return;
         }
 
         Player player = (Player) sender;
 
         if(!player.hasPermission("chequeslite.memo")) {
-            player.sendMessage(Messages.NO_PERMISSION);
+            Messages.sendMessage(Messages.Keys.NO_PERMISSION, player);
             return;
         }
 
@@ -33,12 +33,12 @@ public class Memo {
         NBTItemStack cheque = new NBTItemStack(main.compareVersion("1.9", ChequesLite.Conditions.GREATEROREQUAL) ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInHand());
 
         if (!cheque.hasItemMeta() || !cheque.getItemMeta().hasLore() || !cheque.hasNBTData("creator") || !cheque.hasNBTData("memo")) {
-            player.sendMessage(Messages.INVALID_CHEQUE);
+            Messages.sendMessage(Messages.Keys.INVALID_CHEQUE, player);
             return;
         }
 
         if (args[1].equalsIgnoreCase("clear") && (!cheque.hasNBTData("memo") || cheque.getNBTData("memo").equalsIgnoreCase(""))) {
-            player.sendMessage(Messages.MEMO_ALREADY_EMPTY);
+            Messages.sendMessage(Messages.Keys.MEMO_ALREADY_EMPTY, player);
             return;
         }
 
@@ -50,12 +50,12 @@ public class Memo {
         String memo = "";
         if (!args[1].equalsIgnoreCase("clear")) {
             memo = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-            if(memo.length() > ChequesLite.MAX_MEMO_LENGTH) {
-                player.sendMessage(Messages.MEMO_TOO_LONG);
+            if(memo.length() > main.getConfig().getInt("max_memo_length")) {
+                Messages.sendMessage(Messages.Keys.MEMO_TOO_LONG, player);
                 return;
             }
 
-            lore.add(1, Messages.MEMO_LINE.replace("%memo%", memo));
+            lore.add(1, Messages.getMessage(Messages.Keys.MEMO_LINE).replace("%memo%", memo));
         }
         meta.setLore(lore);
         cheque.setItemMeta(meta);
@@ -63,6 +63,6 @@ public class Memo {
         cheque.setNBTData("memo", memo);
         cheque.updateCheque(player, player.getInventory().getHeldItemSlot());
 
-        player.sendMessage(Messages.CHEQUE_MEMO_CHANGED);
+        Messages.sendMessage(Messages.Keys.CHEQUE_MEMO_CHANGED, player);
     }
 }

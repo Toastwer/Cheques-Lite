@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class Send {
     public Send(ChequesLite main, CommandSender sender, String[] args) {
         if(!sender.hasPermission("chequeslite.send")) {
-            sender.sendMessage(Messages.NO_PERMISSION);
+            Messages.sendMessage(Messages.Keys.NO_PERMISSION, sender);
             return;
         }
 
@@ -22,22 +22,22 @@ public class Send {
         try {
             worth = Double.parseDouble(args[1]);
         } catch (NumberFormatException exception) {
-            sender.sendMessage(Messages.INVALID_CHEQUE_VALUE);
+            Messages.sendMessage(Messages.Keys.INVALID_CHEQUE_VALUE, sender);
             return;
         }
 
-        int min = ChequesLite.MIN_CHEQUE_VALUE;
+        int min = main.getConfig().getInt("min_cheque_value");
         if (worth < min) {
-            sender.sendMessage(Messages.CHEQUE_NOT_WORTH_ENOUGH.replace("%min%", ChequesLite.economy.format(min)));
+            sender.sendMessage(Messages.getMessage(Messages.Keys.CHEQUE_NOT_WORTH_ENOUGH).replace("%min%", ChequesLite.economy.format(min)));
             return;
         }
 
         Player target = main.getServer().getPlayer(args[2]);
         if (target == null) {
-            sender.sendMessage(Messages.TARGET_IS_OFFLINE);
+            Messages.sendMessage(Messages.Keys.TARGET_IS_OFFLINE, sender);
             return;
         } else if (target.getName().equalsIgnoreCase(sender.getName())) {
-            sender.sendMessage(Messages.CANNOT_SEND_TO_SELF);
+            Messages.sendMessage(Messages.Keys.CANNOT_SEND_TO_SELF, sender);
             return;
         }
 
@@ -45,8 +45,8 @@ public class Send {
         if (args.length >= 4)
             memo = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
 
-        if (!memo.equals("") && memo.length() > ChequesLite.MAX_MEMO_LENGTH) {
-            sender.sendMessage(Messages.MEMO_TOO_LONG);
+        if (!memo.equals("") && memo.length() > main.getConfig().getInt("max_memo_length")) {
+            Messages.sendMessage(Messages.Keys.MEMO_TOO_LONG, sender);
             return;
         }
 
@@ -61,6 +61,6 @@ public class Send {
         if(sender instanceof Player)
             ChequesLite.economy.withdrawPlayer((Player) sender, worth);
 
-        sender.sendMessage(Messages.CHEQUE_SENT.replace("%target%", target.getName()));
+        sender.sendMessage(Messages.getMessage(Messages.Keys.CHEQUE_SENT).replace("%target%", target.getName()));
     }
 }

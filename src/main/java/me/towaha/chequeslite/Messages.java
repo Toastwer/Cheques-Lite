@@ -1,39 +1,72 @@
 package me.towaha.chequeslite;
 
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.yaml.snakeyaml.parser.ParserException;
+
+import java.io.File;
+import java.util.HashMap;
+
 public class Messages {
-    public static String NO_PERMISSION = "§cYou do not have the permission to execute that command.";
-    public static String NO_PERMISSION_CLICK = "§cYou do not have the permission to cash the check via clicking.";
-    public static String COMMAND_DOESNT_EXIST = "§cThat command does not exist.";
-    public static String INVENTORY_FULL = "§cYour inventory is full.";
-    public static String ONLY_PLAYERS_CAN_EXECUTE = "§cOnly players can execute that command.";
-    public static String TARGET_IS_OFFLINE = "§cThe target player could not be found.";
-    public static String CANNOT_SEND_TO_SELF = "§cYou can not send cheques to yourself.";
+    private YamlConfiguration config;
 
-    public static String MEMO_ALREADY_EMPTY = "§cThe memo is already empty.";
-    public static String MEMO_TOO_LONG = "§cThere is not enough space for that memo.";
+    public Messages(ChequesLite main) {
+        loadConfig(main);
 
-    public static String INVALID_CHEQUE = "§cThat is not a valid cheque.";
-    public static String INVALID_CHEQUE_VALUE = "§cThat is not a valid cheque value.";
-    public static String CHEQUE_NOT_WORTH_ENOUGH = "§cCheques need to be worth at least %min%.";
+        for(Keys key : Keys.values())
+            if (!config.isSet(key.toString().toLowerCase()))
+                main.getLogger().warning("The message " + key.toString().toLowerCase() + " could not be found in messages.yml, message will not show up.");
+            else
+                messages.put(key, config.getString(key.toString().toLowerCase()));
+    }
 
+    private void loadConfig(ChequesLite main) {
+        main.saveResource("messages.yml", false);
 
-    public static String CHEQUE_CREATED = "§aCreated a new cheque.";
-    public static String CHEQUE_MEMO_CHANGED = "§aMemo has successfully been set.";
-    public static String CHEQUE_SENT = "§aA cheque has been sent to %target%.";
-    public static String CHEQUE_CASHED = "§aYou have cashed a check worth %worth%.";
-    public static String CHEQUE_CASHED_MULTIPLE = "§aYou have cashed %count% cheques worth %worth%. §7(total: %total%)";
+        config = YamlConfiguration.loadConfiguration(new File(main.getDataFolder(), "messages.yml"));
+    }
 
+    public enum Keys {
+        NO_PERMISSION,
+        NO_PERMISSION_CLICK,
+        COMMAND_DOESNT_EXIST,
+        INVENTORY_FULL,
+        ONLY_PLAYERS_CAN_EXECUTE,
+        TARGET_IS_OFFLINE,
+        CANNOT_SEND_TO_SELF,
+        MEMO_ALREADY_EMPTY,
+        MEMO_TOO_LONG,
+        INVALID_CHEQUE,
+        INVALID_CHEQUE_VALUE,
+        CHEQUE_NOT_WORTH_ENOUGH,
+        CHEQUE_CREATED,
+        CHEQUE_MEMO_CHANGED,
+        CHEQUE_SENT,
+        CHEQUE_CASHED,
+        CHEQUE_CASHED_MULTIPLE,
+        CHEQUE_NAME,
+        WORTH_LINE,
+        MEMO_LINE,
+        SIGNER_LINE,
+        UNKNOWN_SENDER,
+        CONSOLE_SENDER,
+        DESCRIPTION_CREATE,
+        DESCRIPTION_SEND,
+        DESCRIPTION_MEMO,
+        DESCRIPTION_CASH
+    }
 
-    public static String CHEQUE_NAME = "§aCheck of §2%worth%";
-
-    public static String WORTH_LINE = "§eValue: §2%worth%";
-    public static String MEMO_LINE = "§eMemo: §f%memo%";
-    public static String SIGNER_LINE = "§eSigner: §f%signer%";
-    public static String UNKNOWN_SENDER = "§oUnknown";
-    public static String CONSOLE_SENDER = "§oServer";
-    
-    public static String DESCRIPTION_CREATE = "§fThis commands creates a check. You can walk up to your target player and click on them to open up an interface. There you can confirm your action. Optionally, you can add a memo to provide a short description as to what the check is for.";
-    public static String DESCRIPTION_SEND = "§fDirectly sends a check to someone. Optionally, you can add a memo to provide a short description as to what the check is for.";
-    public static String DESCRIPTION_MEMO = "§fEdits the memo of the currently held cheque. You can enter 'clear' in order to remove the message.";
-    public static String DESCRIPTION_CASH = "§fCashes the cheque that you're currently holding in your hand.";
+    private static HashMap<Keys, String> messages = new HashMap<>();
+    public static void sendMessage(Keys key, Player player) {
+        sendMessage(key, (CommandSender) player);
+    }
+    public static void sendMessage(Keys key, CommandSender sender) {
+        if(messages.containsKey(key))
+            sender.sendMessage(messages.get(key));
+    }
+    public static String getMessage(Keys key) {
+        return messages.get(key);
+    }
 }

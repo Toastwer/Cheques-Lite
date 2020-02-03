@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,9 +14,6 @@ public final class ChequesLite extends JavaPlugin {
     public ChequesManager chequesManager;
 
     public static Economy economy = null;
-
-    public static int MIN_CHEQUE_VALUE = 100;
-    public static int MAX_MEMO_LENGTH = 100;
 
     @Override
     public void onEnable() {
@@ -35,6 +33,9 @@ public final class ChequesLite extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EventManager(), this);
 
         getCommand("cheque").setExecutor(chequesManager);
+
+        saveResource("config.yml", false);
+        new Messages(this);
 
         getLogger().info("§aChequesLite has successfully started");
     }
@@ -155,5 +156,40 @@ public final class ChequesLite extends JavaPlugin {
             return false;
         }
         return false;
+    }
+
+    public void saveResource(String resourcePath, boolean replace) {
+        if (resourcePath == null || resourcePath.equals("")) {
+            throw new IllegalArgumentException("ResourcePath cannot be null or empty");
+        }
+
+        resourcePath = resourcePath.replace('\\', '/');
+        InputStream in = getResource(resourcePath);
+        if (in == null) {
+            throw new IllegalArgumentException("The embedded resource '" + resourcePath + "' cannot be found in " + getFile());
+        }
+
+        File outFile = new File(getDataFolder(), resourcePath);
+        int lastIndex = resourcePath.lastIndexOf('/');
+        File outDir = new File(getDataFolder(), resourcePath.substring(0, Math.max(lastIndex, 0)));
+
+        if (!outDir.exists())
+            if(!outDir.mkdirs())
+                getServer().getLogger().warning("Something went wrong while saving the '" + outFile.getName() + "' file");
+
+        try {
+            if (!outFile.exists() || replace) {
+                OutputStream out = new FileOutputStream(outFile);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                out.close();
+                in.close();
+            }
+        } catch (IOException ex) {
+            getServer().getLogger().warning("Something went wrong while saving the '" + outFile.getName() + "' file");
+        }
     }
 }

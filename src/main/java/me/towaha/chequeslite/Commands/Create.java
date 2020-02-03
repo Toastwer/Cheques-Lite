@@ -11,14 +11,14 @@ import java.util.Arrays;
 public class Create {
     public Create(ChequesLite main, CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Messages.ONLY_PLAYERS_CAN_EXECUTE);
+            Messages.sendMessage(Messages.Keys.ONLY_PLAYERS_CAN_EXECUTE, sender);
             return;
         }
 
         Player player = (Player) sender;
 
         if(!player.hasPermission("chequeslite.create")) {
-            player.sendMessage(Messages.NO_PERMISSION);
+            Messages.sendMessage(Messages.Keys.NO_PERMISSION, player);
             return;
         }
 
@@ -31,12 +31,12 @@ public class Create {
         try {
             worth = Double.parseDouble(args[1]);
         } catch (NumberFormatException ex) {
-            player.sendMessage(Messages.INVALID_CHEQUE_VALUE);
+            Messages.sendMessage(Messages.Keys.INVALID_CHEQUE_VALUE, player);
             return;
         }
 
-        if (worth < ChequesLite.MIN_CHEQUE_VALUE) {
-            sender.sendMessage(Messages.CHEQUE_NOT_WORTH_ENOUGH.replace("%min%", ChequesLite.economy.format(ChequesLite.MIN_CHEQUE_VALUE)));
+        if (worth < main.getConfig().getInt("min_cheque_value")) {
+            sender.sendMessage(Messages.getMessage(Messages.Keys.CHEQUE_NOT_WORTH_ENOUGH).replace("%min%", ChequesLite.economy.format(main.getConfig().getInt("min_cheque_value"))));
             return;
         }
 
@@ -44,8 +44,8 @@ public class Create {
         if (args.length >= 3)
             memo = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
-        if (!memo.equals("") && memo.length() > ChequesLite.MAX_MEMO_LENGTH) {
-            player.sendMessage(Messages.MEMO_TOO_LONG);
+        if (!memo.equals("") && memo.length() > main.getConfig().getInt("max_memo_length")) {
+            Messages.sendMessage(Messages.Keys.MEMO_TOO_LONG, player);
             return;
         }
 
@@ -56,12 +56,12 @@ public class Create {
         cheque.setNBTData("memo", memo);
 
         if(!cheque.spawnForPlayer(player)) {
-            player.sendMessage(Messages.INVENTORY_FULL);
+            Messages.sendMessage(Messages.Keys.INVENTORY_FULL, player);
             return;
         }
 
         ChequesLite.economy.withdrawPlayer(player, worth);
 
-        player.sendMessage(Messages.CHEQUE_CREATED);
+        Messages.sendMessage(Messages.Keys.CHEQUE_CREATED, player);
     }
 }

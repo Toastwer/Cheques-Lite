@@ -1,0 +1,38 @@
+no_permission: "§cYou do not have the permission to execute that command."
+no_permission_click: "§cYou do not have the permission to cash the check via clicking."
+command_doesnt_exist: "§cThat command does not exist."
+inventory_full: "§cYour inventory is full."
+only_players_can_execute: "§cOnly players can execute that command."
+target_is_offline: "§cThe target player could not be found."
+cannot_send_to_self: "§cYou can not send cheques to yourself."
+
+memo_already_empty: "§cThe memo is already empty."
+memo_too_long: "§cThere is not enough space for that memo."
+
+invalid_cheque: "§cThat is not a valid cheque."
+invalid_cheque_value: "§cThat is not a valid cheque value."
+cheque_not_worth_enough: "§cCheques need to be worth at least %min%." # %min% will be replaced with the minimum value of the cheque
+
+
+cheque_create: "§aCreated a new cheque."
+cheque_memo_changed: "§aMemo has successfully been set."
+cheque_sent: "§aA cheque has been sent to %target%."      # %target% will be replaced with the player the cheque has been sent to
+cheque_cashed: "§aYou have cashed a check worth %worth%." # %worth% will be replaced with the amount the cheque was worth
+cheque_cashed_multiple: "§aYou have cashed %count% cheques worth %worth%. §7(total: %total%)" # %worth% will be replaced with the amount the cheque was worth, %count% is the amount of cheque cashed, %total% is the total worth (worth multiplied by count)
+
+
+cheque_name: "§aCheck of §2%worth%"  # %worth% will be replaced with the amount the cheque is worth
+
+worth_line: "§eValue: §2%worth%"     # %worth% will be replaced with the amount the cheque is worth
+memo_line: "§eMemo: §f%memo%"        # %memo% will be replaced with the memo
+signer_line: "§eSigner: §f%signer%"  # %signer% will be replaced with the signer
+
+
+unknown_sender: "§oUnknown"
+console_sender: "§oServer"
+
+
+description_create: "§fThis commands creates a check. You can walk up to your target player and click on them to open up an interface. There you can confirm your action. Optionally, you can add a memo to provide a short description as to what the check is for."
+description_send: "§fDirectly sends a check to someone. Optionally, you can add a memo to provide a short description as to what the check is for."
+description_memo: "§fEdits the memo of the currently held cheque. You can enter 'clear' in order to remove the message."
+description_cash: "§fCashes the cheque that you're currently holding in your hand."
