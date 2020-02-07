@@ -14,7 +14,7 @@ invalid_cheque_value: "§cThat is not a valid cheque value."
 cheque_not_worth_enough: "§cCheques need to be worth at least %min%." # %min% will be replaced with the minimum value of the cheque
 
 
-cheque_create: "§aCreated a new cheque."
+cheque_created: "§aCreated a new cheque."
 cheque_memo_changed: "§aMemo has successfully been set."
 cheque_sent: "§aA cheque has been sent to %target%."      # %target% will be replaced with the player the cheque has been sent to
 cheque_cashed: "§aYou have cashed a check worth %worth%." # %worth% will be replaced with the amount the cheque was worth

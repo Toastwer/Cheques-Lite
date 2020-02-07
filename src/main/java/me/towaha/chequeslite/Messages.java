@@ -15,11 +15,14 @@ public class Messages {
     public Messages(ChequesLite main) {
         loadConfig(main);
 
-        for(Keys key : Keys.values())
-            if (!config.isSet(key.toString().toLowerCase()))
+        for(Keys key : Keys.values()) {
+            if (key != Keys.INVALID_CLICK_CHEQUE && !config.isSet(key.toString().toLowerCase())) {
                 main.getLogger().warning("The message " + key.toString().toLowerCase() + " could not be found in messages.yml, message will not show up.");
-            else
-                messages.put(key, config.getString(key.toString().toLowerCase()));
+            } else {
+                if(key != Keys.INVALID_CHEQUE_VALUE || main.getConfig().getBoolean("invalid_cheque_click_msg"))
+                    messages.put(Keys.INVALID_CLICK_CHEQUE, config.getString(Keys.INVALID_CHEQUE.toString().toLowerCase()));
+            }
+        }
     }
 
     private void loadConfig(ChequesLite main) {
@@ -39,6 +42,7 @@ public class Messages {
         MEMO_ALREADY_EMPTY,
         MEMO_TOO_LONG,
         INVALID_CHEQUE,
+        INVALID_CLICK_CHEQUE,
         INVALID_CHEQUE_VALUE,
         CHEQUE_NOT_WORTH_ENOUGH,
         CHEQUE_CREATED,

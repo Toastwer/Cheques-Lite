@@ -15,8 +15,10 @@ public class Send {
             return;
         }
 
-        if (args.length < 3)
+        if (args.length < 3) {
             sender.sendMessage("§9Usage: §e/cheque send §f<amount> <player> [memo]");
+            return;
+        }
 
         double worth;
         try {

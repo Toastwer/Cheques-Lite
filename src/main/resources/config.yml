@@ -1,3 +1,6 @@
+# Invalid cheque message when user clicks with paper in his hand.
+invalid_cheque_click_msg: true
+
 # The minimum value a cheque can be created at
 min_cheque_value: 100
 

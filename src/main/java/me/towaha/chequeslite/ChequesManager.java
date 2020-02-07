@@ -120,21 +120,21 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if(args.length == 1) {
             List<String> options = new ArrayList<>();
-            if(sender.hasPermission("chequeslite.normal.create"))
+            if(sender.hasPermission("chequeslite.create"))
                 options.add("create");
 
-            if(sender.hasPermission("chequeslite.normal.send"))
+            if(sender.hasPermission("chequeslite.send"))
                 options.add("send");
 
-            if(sender.hasPermission("chequeslite.normal.memo"))
+            if(sender.hasPermission("chequeslite.memo"))
                 options.add("memo");
 
-            if(sender.hasPermission("chequeslite.normal.cash"))
+            if(sender.hasPermission("chequeslite.cash"))
                 options.add("cash");
 
             return main.getAvailableOptions(options, args[0]);
         } else if(args.length == 3) {
-            if(args[0].equalsIgnoreCase("send") && sender.hasPermission("chequeslite.normal.send")) {
+            if(args[0].equalsIgnoreCase("send") && sender.hasPermission("chequeslite.send")) {
                 List<String> options = new ArrayList<>();
                 for(Player player : main.getServer().getOnlinePlayers())
                     options.add(player.getName());

@@ -1,6 +1,7 @@
 package me.towaha.chequeslite;
 
 import me.towaha.chequeslite.Classes.NBTItemStack;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,8 +20,11 @@ public class EventManager implements Listener {
         Player player = event.getPlayer();
 
         ItemStack item = event.getItem();
+        if(item == null || item.getType() != Material.PAPER)
+            return;
+
         if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName() || !item.getItemMeta().hasLore()) {
-            Messages.sendMessage(Messages.Keys.INVALID_CHEQUE, player);
+            Messages.sendMessage(Messages.Keys.INVALID_CLICK_CHEQUE, player);
             return;
         }
 
