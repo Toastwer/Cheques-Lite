@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.yaml.snakeyaml.parser.ParserException;
 
 import java.io.File;
 import java.util.HashMap;
@@ -20,7 +19,7 @@ public class Messages {
                 main.getLogger().warning("The message " + key.toString().toLowerCase() + " could not be found in messages.yml, message will not show up.");
             } else {
                 if(key != Keys.INVALID_CHEQUE_VALUE || main.getConfig().getBoolean("invalid_cheque_click_msg"))
-                    messages.put(Keys.INVALID_CLICK_CHEQUE, config.getString(Keys.INVALID_CHEQUE.toString().toLowerCase()));
+                    messages.put(key, config.getString(key.toString().toLowerCase()));
             }
         }
     }
