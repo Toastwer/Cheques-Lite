@@ -1,5 +1,6 @@
 no_permission: "§cYou do not have the permission to execute that command."
 no_permission_click: "§cYou do not have the permission to cash the check via clicking."
+not_enough_money: "§cYou do not have enough money to create that cheque."
 command_doesnt_exist: "§cThat command does not exist."
 inventory_full: "§cYour inventory is full."
 only_players_can_execute: "§cOnly players can execute that command."

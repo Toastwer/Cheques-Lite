@@ -33,6 +33,7 @@ public class Messages {
     public enum Keys {
         NO_PERMISSION,
         NO_PERMISSION_CLICK,
+        NOT_ENOUGH_MONEY,
         COMMAND_DOESNT_EXIST,
         INVENTORY_FULL,
         ONLY_PLAYERS_CAN_EXECUTE,

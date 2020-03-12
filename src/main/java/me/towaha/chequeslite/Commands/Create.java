@@ -40,6 +40,11 @@ public class Create {
             return;
         }
 
+        if(!main.chequesManager.hasEnoughMoneyEssentials(player, worth)) {
+            Messages.sendMessage(Messages.Keys.NOT_ENOUGH_MONEY, player);
+            return;
+        }
+
         String memo = "";
         if (args.length >= 3)
             memo = String.join(" ", Arrays.copyOfRange(args, 2, args.length));

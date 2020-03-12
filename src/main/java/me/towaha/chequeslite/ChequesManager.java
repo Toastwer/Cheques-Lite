@@ -14,8 +14,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -171,5 +173,14 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
                 .displayName(Messages.getMessage(Messages.Keys.CHEQUE_NAME).replace("%worth%", currency))
                 .lore(lore)
                 .NBTBuild();
+    }
+
+    public boolean hasEnoughMoneyEssentials(Player player, double amount) {
+        File essentialsConfig = new File(main.getDataFolder().getParent() + "/Essentials/config.yml");
+        if(essentialsConfig.exists()) {
+            double minMoney = YamlConfiguration.loadConfiguration(essentialsConfig).getDouble("min-money");
+            return ChequesLite.economy.getBalance(player) - amount >= minMoney;
+        }
+        return false;
     }
 }
