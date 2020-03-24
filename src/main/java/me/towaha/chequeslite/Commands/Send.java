@@ -34,6 +34,11 @@ public class Send {
             return;
         }
 
+        if(sender instanceof Player && !main.chequesManager.hasEnoughMoneyEssentials((Player) sender, worth)) {
+            Messages.sendMessage(Messages.Keys.NOT_ENOUGH_MONEY, sender);
+            return;
+        }
+
         Player target = main.getServer().getPlayer(args[2]);
         if (target == null) {
             Messages.sendMessage(Messages.Keys.TARGET_IS_OFFLINE, sender);

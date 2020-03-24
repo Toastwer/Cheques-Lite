@@ -1,0 +1,15 @@
+# Here you can change what the user needs to type for the sub-commands, you can add additionally as many options as you wish.
+help:
+  - "help"
+
+create:
+  - "create"
+
+send:
+  - "send"
+
+memo:
+  - "memo"
+
+cash:
+  - "cash"

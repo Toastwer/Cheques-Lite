@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ChequesManager implements CommandExecutor, TabCompleter {
@@ -100,21 +101,20 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length >= 1 && !args[0].equalsIgnoreCase("help")) {
-            if (args[0].equalsIgnoreCase("create")) {
+        if (args.length >= 1 && !Arrays.asList(main.commands.get(ChequesLite.subCommand.help)).contains(args[0].toLowerCase()))
+            if (Arrays.asList(main.commands.get(ChequesLite.subCommand.create)).contains(args[0].toLowerCase()))
                 new Create(main, sender, args);
-            } else if (args[0].equalsIgnoreCase("send")) {
+            else if (Arrays.asList(main.commands.get(ChequesLite.subCommand.send)).contains(args[0].toLowerCase()))
                 new Send(main, sender, args);
-            } else if (args[0].equalsIgnoreCase("memo")) {
+            else if (Arrays.asList(main.commands.get(ChequesLite.subCommand.memo)).contains(args[0].toLowerCase()))
                 new Memo(main, sender, args);
-            } else if (args[0].equalsIgnoreCase("cash")) {
+            else if (Arrays.asList(main.commands.get(ChequesLite.subCommand.cash)).contains(args[0].toLowerCase()))
                 new Cash(main, sender);
-            } else {
+            else
                 Messages.sendMessage(Messages.Keys.COMMAND_DOESNT_EXIST, sender);
-            }
-        } else {
+        else
             sendHelp(sender);
-        }
+
         return true;
     }
 
@@ -123,16 +123,16 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
         if(args.length == 1) {
             List<String> options = new ArrayList<>();
             if(sender.hasPermission("chequeslite.create"))
-                options.add("create");
+                options.addAll(Arrays.asList(main.commands.get(ChequesLite.subCommand.create)));
 
             if(sender.hasPermission("chequeslite.send"))
-                options.add("send");
+                options.addAll(Arrays.asList(main.commands.get(ChequesLite.subCommand.send)));
 
             if(sender.hasPermission("chequeslite.memo"))
-                options.add("memo");
+                options.addAll(Arrays.asList(main.commands.get(ChequesLite.subCommand.memo)));
 
             if(sender.hasPermission("chequeslite.cash"))
-                options.add("cash");
+                options.addAll(Arrays.asList(main.commands.get(ChequesLite.subCommand.cash)));
 
             return main.getAvailableOptions(options, args[0]);
         } else if(args.length == 3) {

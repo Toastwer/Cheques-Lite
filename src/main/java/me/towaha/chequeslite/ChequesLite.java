@@ -2,16 +2,31 @@ package me.towaha.chequeslite;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class ChequesLite extends JavaPlugin {
 
     public ChequesManager chequesManager;
+
+    public enum subCommand {
+        help,
+        create,
+        send,
+        memo,
+        cash
+    }
+    public HashMap<subCommand, String[]> commands = new HashMap<>();
+    private FileConfiguration commandsConfig;
 
     public static Economy economy = null;
 
@@ -35,6 +50,11 @@ public final class ChequesLite extends JavaPlugin {
         getCommand("cheque").setExecutor(chequesManager);
 
         saveResource("config.yml", false);
+        saveResource("commands.yml", false);
+        commandsConfig = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "commands.yml"));
+
+        loadCommands();
+
         new Messages(this);
 
         getLogger().info("§aChequesLite has successfully started");
@@ -55,6 +75,18 @@ public final class ChequesLite extends JavaPlugin {
         }
         economy = registeredServiceProvider.getProvider();
         return economy != null;
+    }
+
+    private void loadCommands() {
+        if(commandsConfig != null)
+            Arrays.stream(subCommand.values()).forEach(cmd -> {
+                if(commandsConfig.isSet(cmd.toString()))
+                    commands.put(cmd, Arrays.stream(commandsConfig.getStringList(cmd.toString()).stream().map(String::toLowerCase).toArray()).map(Object::toString).toArray(String[]::new));
+                else
+                    commands.put(cmd, new String[]{cmd.toString()});
+            });
+        else
+            Arrays.stream(subCommand.values()).forEach(cmd -> commands.put(cmd, new String[]{cmd.toString()}));
     }
 
     public List<String> getAvailableOptions(List<String> currentOptions, String input) {
