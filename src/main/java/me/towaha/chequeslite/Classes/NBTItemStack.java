@@ -2,7 +2,6 @@ package me.towaha.chequeslite.Classes;
 
 import me.towaha.chequeslite.ChequesLite;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -214,10 +213,6 @@ public class NBTItemStack extends ItemStack {
     public void updateCheque(Player player, int slot) {
         player.getInventory().setItem(slot, null);
         player.getInventory().setItem(slot, super.clone());
-    }
-
-    public void removeStack(Player player, int amount) {
-        removeStack(player, amount, false);
     }
 
     public void removeStack(Player player, int amount, boolean offHand) {
