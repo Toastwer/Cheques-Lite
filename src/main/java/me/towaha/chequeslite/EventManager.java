@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class EventManager implements Listener {
@@ -49,7 +50,7 @@ public class EventManager implements Listener {
         }
 
         double total = worth * cheque.getAmount();
-        cheque.removeStack(player, cheque.getAmount());
+        cheque.removeStack(player, cheque.getAmount(), event.getHand() == EquipmentSlot.OFF_HAND);
 
         ChequesLite.economy.depositPlayer(player, total);
 

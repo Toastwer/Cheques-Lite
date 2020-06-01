@@ -3,8 +3,10 @@ package me.towaha.chequeslite.Commands;
 import me.towaha.chequeslite.ChequesLite;
 import me.towaha.chequeslite.Classes.NBTItemStack;
 import me.towaha.chequeslite.Messages;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class Cash {
     public Cash(ChequesLite main, CommandSender sender) {
@@ -20,7 +22,21 @@ public class Cash {
             return;
         }
 
-        NBTItemStack cheque = new NBTItemStack(main.compareVersion("1.9", ChequesLite.Conditions.GREATEROREQUAL) ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInHand());
+        boolean offHand = false;
+        ItemStack item;
+        if (main.compareVersion("1.9", ChequesLite.Conditions.GREATEROREQUAL)) {
+            ItemStack mainHand = player.getInventory().getItemInMainHand();
+            if (mainHand != null && mainHand.getType() == Material.PAPER) {
+                item = mainHand;
+            } else {
+                item = player.getInventory().getItemInOffHand();
+                offHand = true;
+            }
+        } else {
+            item = player.getInventory().getItemInHand();
+        }
+
+        NBTItemStack cheque = new NBTItemStack(item);
 
         if (!cheque.hasItemMeta() || !cheque.getItemMeta().hasDisplayName() || !cheque.getItemMeta().hasLore() || !cheque.hasNBTData("creator")) {
             Messages.sendMessage(Messages.Keys.INVALID_CHEQUE, player);
@@ -36,7 +52,7 @@ public class Cash {
         }
 
         double total = worth * cheque.getAmount();
-        cheque.removeStack(player, cheque.getAmount());
+        cheque.removeStack(player, cheque.getAmount(), offHand);
 
         ChequesLite.economy.depositPlayer(player, worth);
 

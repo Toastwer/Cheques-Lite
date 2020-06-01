@@ -2,15 +2,13 @@ package me.towaha.chequeslite.Classes;
 
 import me.towaha.chequeslite.ChequesLite;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 public class NBTItemStack extends ItemStack {
     public NBTItemStack(ItemStack itemStack) {
@@ -219,15 +217,27 @@ public class NBTItemStack extends ItemStack {
     }
 
     public void removeStack(Player player, int amount) {
+        removeStack(player, amount, false);
+    }
+
+    public void removeStack(Player player, int amount, boolean offHand) {
         Inventory inventory = player.getInventory();
 
-        ItemStack item = compareVersion("1.9", ChequesLite.Conditions.GREATEROREQUAL) ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInHand();
-        if(item != null && item.getItemMeta().equals(super.getItemMeta()) && item.getItemMeta().equals(super.getItemMeta())) {
+        ItemStack item;
+        if (compareVersion("1.9", ChequesLite.Conditions.GREATEROREQUAL))
+            item = offHand ? player.getInventory().getItemInOffHand() : player.getInventory().getItemInMainHand();
+        else
+            item = player.getInventory().getItemInHand();
+
+        if(item != null && item.getItemMeta().equals(super.getItemMeta()) && item.getData().equals(super.getData())) {
             item.setAmount(Math.max(item.getAmount() - amount, 0));
             if(compareVersion("1.9", ChequesLite.Conditions.LESS))
                 player.getInventory().setItemInHand(item);
             else if(compareVersion("1.11", ChequesLite.Conditions.LESS))
-                player.getInventory().setItemInMainHand(item);
+                if (offHand)
+                    player.getInventory().setItemInOffHand(item);
+                else
+                    player.getInventory().setItemInMainHand(item);
 
             return;
         }
