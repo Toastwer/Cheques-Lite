@@ -3,6 +3,8 @@ version: ${project.version}
 main: me.towaha.chequeslite.ChequesLite
 prefix: ChequesLite
 authors: [Toaster]
+softdepend:
+  - Vault
 
 commands:
   cheque:

@@ -142,6 +142,9 @@ public final class ChequesLite extends JavaPlugin {
             case "v1_15_R1":
                 currentVersion = "1.15";
                 break;
+            case "v1_16_R1":
+                currentVersion = "1.16";
+                break;
         }
 
         if(currentVersion == null) {
