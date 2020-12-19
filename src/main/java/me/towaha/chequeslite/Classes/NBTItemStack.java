@@ -73,7 +73,7 @@ public class NBTItemStack extends ItemStack {
             case "v1_15_R1":
                 currentVersion = "1.15";
                 break;
-            case "v1_16_R1":
+            case "v1_16_R1": case "v1_16_R2":
                 currentVersion = "1.16";
                 break;
         }
