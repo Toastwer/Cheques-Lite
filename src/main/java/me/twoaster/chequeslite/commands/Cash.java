@@ -1,8 +1,8 @@
-package me.towaha.chequeslite.Commands;
+package me.twoaster.chequeslite.commands;
 
-import me.towaha.chequeslite.ChequesLite;
-import me.towaha.chequeslite.Classes.NBTItemStack;
-import me.towaha.chequeslite.Messages;
+import me.twoaster.chequeslite.ChequesLite;
+import me.twoaster.chequeslite.util.ItemStackUtil;
+import me.twoaster.chequeslite.Messages;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,14 +17,14 @@ public class Cash {
 
         Player player = (Player) sender;
 
-        if(!player.hasPermission("chequeslite.cashcommand")) {
+        if (!player.hasPermission("chequeslite.cashcommand")) {
             Messages.sendMessage(Messages.Keys.NO_PERMISSION, player);
             return;
         }
 
         boolean offHand = false;
         ItemStack item;
-        if (main.compareVersion("1.9", ChequesLite.Conditions.GREATEROREQUAL)) {
+        if (ChequesLite.compareVersion("1.9", ChequesLite.Conditions.GREATEROREQUAL)) {
             ItemStack mainHand = player.getInventory().getItemInMainHand();
             if (mainHand != null && mainHand.getType() == Material.PAPER) {
                 item = mainHand;
@@ -36,30 +36,29 @@ public class Cash {
             item = player.getInventory().getItemInHand();
         }
 
-        NBTItemStack cheque = new NBTItemStack(item);
-
-        if (!cheque.hasItemMeta() || !cheque.getItemMeta().hasDisplayName() || !cheque.getItemMeta().hasLore() || !cheque.hasNBTData("creator")) {
+        if (!item.hasItemMeta() || !item.getItemMeta().hasDisplayName() || !item.getItemMeta().hasLore() || !ItemStackUtil.hasNBTData(item, "creator")) {
             Messages.sendMessage(Messages.Keys.INVALID_CHEQUE, player);
             return;
         }
 
         double worth;
         try {
-            worth = Double.parseDouble(cheque.getNBTData("worth"));
+            worth = Double.parseDouble(ItemStackUtil.getNBTData(item, "worth"));
         } catch (NumberFormatException exception) {
             Messages.sendMessage(Messages.Keys.INVALID_CHEQUE_VALUE, player);
             return;
         }
 
-        double total = worth * cheque.getAmount();
-        cheque.removeStack(player, cheque.getAmount(), offHand);
+        int amount = item.getAmount();
+        double total = worth * amount;
+        ItemStackUtil.removeStack(item, player, item.getAmount(), offHand);
 
         ChequesLite.economy.depositPlayer(player, worth);
 
-        if(cheque.getAmount() > 1)
+        if (amount > 1)
             player.sendMessage(Messages.getMessage(Messages.Keys.CHEQUE_CASHED_MULTIPLE)
                     .replace("%worth%", ChequesLite.economy.format(worth))
-                    .replace("%count%", String.valueOf(cheque.getAmount()))
+                    .replace("%count%", String.valueOf(amount))
                     .replace("%total%", ChequesLite.economy.format(total)));
         else
             player.sendMessage(Messages.getMessage(Messages.Keys.CHEQUE_CASHED).replace("%worth%", ChequesLite.economy.format(worth)));

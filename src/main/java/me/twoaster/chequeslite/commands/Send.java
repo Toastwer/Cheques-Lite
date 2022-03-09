@@ -1,16 +1,17 @@
-package me.towaha.chequeslite.Commands;
+package me.twoaster.chequeslite.commands;
 
-import me.towaha.chequeslite.ChequesLite;
-import me.towaha.chequeslite.Classes.NBTItemStack;
-import me.towaha.chequeslite.Messages;
+import me.twoaster.chequeslite.ChequesLite;
+import me.twoaster.chequeslite.util.ItemStackUtil;
+import me.twoaster.chequeslite.Messages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 
 public class Send {
     public Send(ChequesLite main, CommandSender sender, String[] args) {
-        if(!sender.hasPermission("chequeslite.send")) {
+        if (!sender.hasPermission("chequeslite.send")) {
             Messages.sendMessage(Messages.Keys.NO_PERMISSION, sender);
             return;
         }
@@ -34,7 +35,7 @@ public class Send {
             return;
         }
 
-        if(sender instanceof Player && !main.chequesManager.hasEnoughMoneyEssentials((Player) sender, worth)) {
+        if (sender instanceof Player && !main.chequesManager.hasEnoughMoneyEssentials((Player) sender, worth)) {
             Messages.sendMessage(Messages.Keys.NOT_ENOUGH_MONEY, sender);
             return;
         }
@@ -57,15 +58,15 @@ public class Send {
             return;
         }
 
-        NBTItemStack cheque = new NBTItemStack(main.chequesManager.createCheque(sender, worth, memo));
+        ItemStack cheque = new ItemStack(main.chequesManager.createCheque(sender, worth, memo));
 
-        cheque.setNBTData("worth", worth);
-        cheque.setNBTData("creator", sender instanceof Player ? ((Player) sender).getUniqueId().toString() : sender.getName());
-        cheque.setNBTData("memo", memo);
+        cheque = ItemStackUtil.setNBTData(cheque, "worth", worth);
+        cheque = ItemStackUtil.setNBTData(cheque, "creator", sender instanceof Player ? ((Player) sender).getUniqueId().toString() : sender.getName());
+        cheque = ItemStackUtil.setNBTData(cheque, "memo", memo);
 
-        cheque.spawnForPlayer(target);
+        ItemStackUtil.spawnForPlayer(cheque, target);
 
-        if(sender instanceof Player)
+        if (sender instanceof Player)
             ChequesLite.economy.withdrawPlayer((Player) sender, worth);
 
         sender.sendMessage(Messages.getMessage(Messages.Keys.CHEQUE_SENT).replace("%target%", target.getName()));

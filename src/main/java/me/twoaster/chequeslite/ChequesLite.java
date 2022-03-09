@@ -1,4 +1,4 @@
-package me.towaha.chequeslite;
+package me.twoaster.chequeslite;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -24,6 +24,7 @@ public final class ChequesLite extends JavaPlugin {
         memo,
         cash
     }
+
     public HashMap<subCommand, String[]> commands = new HashMap<>();
     private FileConfiguration commandsConfig;
 
@@ -33,10 +34,10 @@ public final class ChequesLite extends JavaPlugin {
     public void onEnable() {
         if (!setupEconomy()) {
             getServer().getConsoleSender().sendRawMessage("§8----------------------------------------" +
-                    "\n                 §4Cheques Lite Severe Error:"                 +
-                    "\n                 §cDisabled due to no Vault dependency found!" +
-                    "\n                 §cThis plugin requires Vault to function."    +
-                    "\n                 §8----------------------------------------"
+                                                          "\n                 §4Cheques Lite Severe Error:" +
+                                                          "\n                 §cDisabled due to no Vault dependency found!" +
+                                                          "\n                 §cThis plugin requires Vault and an economy provider to function." +
+                                                          "\n                 §8----------------------------------------"
             );
             getServer().getPluginManager().disablePlugin(this);
             return;
@@ -77,9 +78,9 @@ public final class ChequesLite extends JavaPlugin {
     }
 
     private void loadCommands() {
-        if(commandsConfig != null)
+        if (commandsConfig != null)
             Arrays.stream(subCommand.values()).forEach(cmd -> {
-                if(commandsConfig.isSet(cmd.toString()))
+                if (commandsConfig.isSet(cmd.toString()))
                     commands.put(cmd, Arrays.stream(commandsConfig.getStringList(cmd.toString()).stream().map(String::toLowerCase).toArray()).map(Object::toString).toArray(String[]::new));
                 else
                     commands.put(cmd, new String[]{cmd.toString()});
@@ -92,14 +93,14 @@ public final class ChequesLite extends JavaPlugin {
         List<String> availableOptions = new ArrayList<>();
 
         for (String option : currentOptions)
-            if(option.length() >= input.length() && option.substring(0, input.length()).equals(input))
+            if (option.length() >= input.length() && option.substring(0, input.length()).equals(input))
                 availableOptions.add(option);
 
         return availableOptions;
     }
 
-    private String getVersion() {
-        return getServer().getClass().getPackage().getName().split("\\.")[3];
+    private static String getVersion() {
+        return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     }
 
     public enum Conditions {
@@ -109,9 +110,10 @@ public final class ChequesLite extends JavaPlugin {
         LESSOREQUAL,
         EQUAL
     }
-    public boolean compareVersion(String version, Conditions condition) {
+
+    public static boolean compareVersion(String version, Conditions condition) {
         String currentVersion = null;
-        switch(getVersion()){
+        switch (getVersion()) {
             case "v1_8_R3":
                 currentVersion = "1.8.8";
                 break;
@@ -142,18 +144,28 @@ public final class ChequesLite extends JavaPlugin {
             case "v1_15_R1":
                 currentVersion = "1.15";
                 break;
-            case "v1_16_R1": case "v1_16_R2":
+            case "v1_16_R1":
+            case "v1_16_R2":
                 currentVersion = "1.16";
+                break;
+            case "v1_17_R1":
+                currentVersion = "1.17";
+                break;
+            case "v1_18_R1":
+                currentVersion = "1.18";
+                break;
+            case "v1_18_R2":
+                currentVersion = "1.18.2";
                 break;
         }
 
-        if(currentVersion == null) {
-            getLogger().severe("Server version wasn't able to be found, parts of the plugin may not work correctly. Please contact the developers. (VER: " + getVersion() + ")");
+        if (currentVersion == null) {
+            Bukkit.getLogger().severe("Server version wasn't able to be found, parts of the plugin may not work correctly. Please contact the developers. (VER: " + getVersion() + ")");
             return false;
         }
 
         try {
-            if(version.split("\\.").length == 2) {
+            if (version.split("\\.").length == 2) {
                 int compareVersion = Integer.parseInt(currentVersion.split("\\.")[1]);
                 int askedVersion = Integer.parseInt(version.split("\\.")[1]);
 
@@ -208,7 +220,7 @@ public final class ChequesLite extends JavaPlugin {
         File outDir = new File(getDataFolder(), resourcePath.substring(0, Math.max(lastIndex, 0)));
 
         if (!outDir.exists())
-            if(!outDir.mkdirs())
+            if (!outDir.mkdirs())
                 getServer().getLogger().warning("Something went wrong while saving the '" + outFile.getName() + "' file");
 
         try {

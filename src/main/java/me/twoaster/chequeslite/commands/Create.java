@@ -1,10 +1,11 @@
-package me.towaha.chequeslite.Commands;
+package me.twoaster.chequeslite.commands;
 
-import me.towaha.chequeslite.ChequesLite;
-import me.towaha.chequeslite.Classes.NBTItemStack;
-import me.towaha.chequeslite.Messages;
+import me.twoaster.chequeslite.ChequesLite;
+import me.twoaster.chequeslite.util.ItemStackUtil;
+import me.twoaster.chequeslite.Messages;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 
@@ -17,7 +18,7 @@ public class Create {
 
         Player player = (Player) sender;
 
-        if(!player.hasPermission("chequeslite.create")) {
+        if (!player.hasPermission("chequeslite.create")) {
             Messages.sendMessage(Messages.Keys.NO_PERMISSION, player);
             return;
         }
@@ -40,7 +41,7 @@ public class Create {
             return;
         }
 
-        if(!main.chequesManager.hasEnoughMoneyEssentials(player, worth)) {
+        if (!main.chequesManager.hasEnoughMoneyEssentials(player, worth)) {
             Messages.sendMessage(Messages.Keys.NOT_ENOUGH_MONEY, player);
             return;
         }
@@ -54,13 +55,13 @@ public class Create {
             return;
         }
 
-        NBTItemStack cheque = new NBTItemStack(main.chequesManager.createCheque(player, worth, memo));
+        ItemStack cheque = new ItemStack(main.chequesManager.createCheque(player, worth, memo));
 
-        cheque.setNBTData("worth", worth);
-        cheque.setNBTData("creator", player.getUniqueId());
-        cheque.setNBTData("memo", memo);
+        cheque = ItemStackUtil.setNBTData(cheque, "worth", worth);
+        cheque = ItemStackUtil.setNBTData(cheque, "creator", player.getUniqueId());
+        cheque = ItemStackUtil.setNBTData(cheque, "memo", memo);
 
-        if(!cheque.spawnForPlayer(player)) {
+        if (!ItemStackUtil.spawnForPlayer(cheque, player)) {
             Messages.sendMessage(Messages.Keys.INVENTORY_FULL, player);
             return;
         }

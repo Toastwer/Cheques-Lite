@@ -1,6 +1,6 @@
 name: ChequesLite
 version: ${project.version}
-main: me.towaha.chequeslite.ChequesLite
+main: me.twoaster.chequeslite.ChequesLite
 prefix: ChequesLite
 authors: [Toaster]
 softdepend:

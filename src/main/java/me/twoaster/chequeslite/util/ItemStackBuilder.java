@@ -1,4 +1,4 @@
-package me.towaha.chequeslite.Classes;
+package me.twoaster.chequeslite.util;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -25,8 +25,8 @@ public class ItemStackBuilder {
         return this;
     }
 
-    public NBTItemStack NBTBuild() {
-        NBTItemStack clonedStack = new NBTItemStack(itemStack.clone());
+    public ItemStack build() {
+        ItemStack clonedStack = new ItemStack(itemStack.clone());
         clonedStack.setItemMeta(itemMeta.clone());
         return clonedStack;
     }

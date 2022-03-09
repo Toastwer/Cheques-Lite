@@ -1,11 +1,10 @@
-package me.towaha.chequeslite;
+package me.twoaster.chequeslite;
 
-import me.towaha.chequeslite.Classes.ItemStackBuilder;
-import me.towaha.chequeslite.Classes.NBTItemStack;
-import me.towaha.chequeslite.Commands.Cash;
-import me.towaha.chequeslite.Commands.Create;
-import me.towaha.chequeslite.Commands.Memo;
-import me.towaha.chequeslite.Commands.Send;
+import me.twoaster.chequeslite.util.ItemStackBuilder;
+import me.twoaster.chequeslite.commands.Cash;
+import me.twoaster.chequeslite.commands.Create;
+import me.twoaster.chequeslite.commands.Memo;
+import me.twoaster.chequeslite.commands.Send;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -16,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,6 +24,7 @@ import java.util.List;
 
 public class ChequesManager implements CommandExecutor, TabCompleter {
     private ChequesLite main;
+
     public ChequesManager(ChequesLite main) {
         this.main = main;
     }
@@ -36,7 +37,7 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
 
         StringBuilder descriptionText = new StringBuilder("§e/" + command + " " + subcommand + " §6Help\n§r");
 
-        if(description != null) {
+        if (description != null) {
             int characters = 0;
             int index = 0;
             for (String word : description.split(" ")) {
@@ -54,7 +55,7 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
         }
 
         TextComponent component = new TextComponent(visualText.toString() + "\n");
-        if(description != null)
+        if (description != null)
             component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(descriptionText.toString()).create()));
         return component;
     }
@@ -91,7 +92,7 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
         }
 
         mainComponent.addExtra("\n§7§oYou can hover over any of the above commands for help" +
-                "\n§8-------------------------------------------------");
+                               "\n§8-------------------------------------------------");
 
         if (hasLine)
             ((Player) sender).spigot().sendMessage(mainComponent);
@@ -120,25 +121,25 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if(args.length == 1) {
+        if (args.length == 1) {
             List<String> options = new ArrayList<>();
-            if(sender.hasPermission("chequeslite.create"))
+            if (sender.hasPermission("chequeslite.create"))
                 options.addAll(Arrays.asList(main.commands.get(ChequesLite.subCommand.create)));
 
-            if(sender.hasPermission("chequeslite.send"))
+            if (sender.hasPermission("chequeslite.send"))
                 options.addAll(Arrays.asList(main.commands.get(ChequesLite.subCommand.send)));
 
-            if(sender.hasPermission("chequeslite.memo"))
+            if (sender.hasPermission("chequeslite.memo"))
                 options.addAll(Arrays.asList(main.commands.get(ChequesLite.subCommand.memo)));
 
-            if(sender.hasPermission("chequeslite.cash"))
+            if (sender.hasPermission("chequeslite.cash"))
                 options.addAll(Arrays.asList(main.commands.get(ChequesLite.subCommand.cash)));
 
             return main.getAvailableOptions(options, args[0]);
-        } else if(args.length == 3) {
-            if(args[0].equalsIgnoreCase("send") && sender.hasPermission("chequeslite.send")) {
+        } else if (args.length == 3) {
+            if (args[0].equalsIgnoreCase("send") && sender.hasPermission("chequeslite.send")) {
                 List<String> options = new ArrayList<>();
-                for(Player player : main.getServer().getOnlinePlayers())
+                for (Player player : main.getServer().getOnlinePlayers())
                     options.add(player.getName());
 
                 return main.getAvailableOptions(options, args[2]);
@@ -147,7 +148,7 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
         return new ArrayList<>();
     }
 
-    public NBTItemStack createCheque(CommandSender sender, double amount, String memo) {
+    public ItemStack createCheque(CommandSender sender, double amount, String memo) {
         if (amount < main.getConfig().getInt("min_cheque_value") || amount < 0)
             return null;
 
@@ -172,12 +173,12 @@ public class ChequesManager implements CommandExecutor, TabCompleter {
         return new ItemStackBuilder(Material.PAPER)
                 .displayName(Messages.getMessage(Messages.Keys.CHEQUE_NAME).replace("%worth%", currency))
                 .lore(lore)
-                .NBTBuild();
+                .build();
     }
 
     public boolean hasEnoughMoneyEssentials(Player player, double amount) {
         File essentialsConfig = new File(main.getDataFolder().getParent() + "/Essentials/config.yml");
-        if(essentialsConfig.exists()) {
+        if (essentialsConfig.exists()) {
             double minMoney = YamlConfiguration.loadConfiguration(essentialsConfig).getDouble("min-money");
             return ChequesLite.economy.getBalance(player) - amount >= minMoney;
         }

@@ -1,7 +1,6 @@
-package me.towaha.chequeslite;
+package me.twoaster.chequeslite;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -14,11 +13,11 @@ public class Messages {
     public Messages(ChequesLite main) {
         loadConfig(main);
 
-        for(Keys key : Keys.values()) {
+        for (Keys key : Keys.values()) {
             if (key != Keys.INVALID_CLICK_CHEQUE && !config.isSet(key.toString().toLowerCase())) {
                 main.getLogger().warning("The message " + key.toString().toLowerCase() + " could not be found in messages.yml, message will not show up.");
             } else {
-                if(key != Keys.INVALID_CHEQUE_VALUE || main.getConfig().getBoolean("invalid_cheque_click_msg"))
+                if (key != Keys.INVALID_CHEQUE_VALUE || main.getConfig().getBoolean("invalid_cheque_click_msg"))
                     messages.put(key, config.getString(key.toString().toLowerCase()));
             }
         }
@@ -62,14 +61,17 @@ public class Messages {
         DESCRIPTION_CASH
     }
 
-    private static HashMap<Keys, String> messages = new HashMap<>();
+    private static final HashMap<Keys, String> messages = new HashMap<>();
+
     public static void sendMessage(Keys key, Player player) {
         sendMessage(key, (CommandSender) player);
     }
+
     public static void sendMessage(Keys key, CommandSender sender) {
-        if(messages.containsKey(key))
+        if (messages.containsKey(key))
             sender.sendMessage(messages.get(key));
     }
+
     public static String getMessage(Keys key) {
         return messages.get(key);
     }
